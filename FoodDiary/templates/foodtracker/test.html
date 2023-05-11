@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<form name="form" method="post" >
+    {% csrf_token %}
+    <label for='email'>Enter your Email:</label>
+    <input type="text" name='email' id='email' value="email">
+    <br><br>
+    <label for='firstName'>Enter your first name:</label>
+    <input type="text" name='firstName' id='firstName' value="firstName"> 
+    <br><br>
+    <label for='lastName'>Enter your last name:</label>
+    <input type="text" name='lastName' id='lastName' value="lastName"> 
+    <br><br>     
+    <button type="submit">Register</button>
+</form>
+<a href="{% url 'addPerson' firstName='firstName' lastName='lastName' email='email@gmail.com' %}">Register Person</a>
+{% endblock %}

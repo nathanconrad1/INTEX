@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<form name="form" method="post" action="{% url 'foodtracker:newConsumed' %}">
+    {% csrf_token %}
+<label for='food_name'>Food Name:</label>
+<input type="text" name='foodName' id='foodName' value="{{foodName}}">
+<label for='food_name'>New Quantity</label>
+<input type="number" name='quantity' id='quantity' value="{{quantity}}">
+<input type="hidden" name='email' value="{{current_person}}"> 
+<input type="hidden" name='dcid' id='dcid' value="{{current_dc}}">
+<button type="submit">Update</button>
+</form>
+{%endblock%}

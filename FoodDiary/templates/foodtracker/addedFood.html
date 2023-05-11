@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href= "{% static 'css/table.css' %}" >
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Successful Add</title>
+    <link rel="stylesheet" href="{% static 'css/css.css' %}">
+    
+  </head>
+  <body><!-- change to foodDone route -->
+    Food Added!
+    <form name="form" method="post" action="{% url 'foodtracker:saveConsumed' %}">
+        {% csrf_token %}
+
+        <input type="hidden" name="dcid" value="{{current_dc}}"/>
+        <input type="hidden" name="quantity" value="{{quantity}}"/>
+        <input type="hidden" name="email" value="{{current_person}}"/>
+        <input type="hidden" name="food_name" value="{{new_food.food_name}}"/>
+        <button type="submit" name='done'>Submit</button>
+        <button type="submit" name='more'>Submit and Add More Food</button>
+    <!--<button type="submit" name='more'>Submit and Add More Food</button>>-->
+    </form>
+
+
+    <div id="wrapper">
+      <h1>Today's Food</h1>
+      
+      <table id="keywords" cellspacing="0" cellpadding="0">
+      <thead>
+          <tr>
+          <th><span>Food</span></th>
+          <th><span>Quantity</span></th>
+          </tr>
+      </thead>
+      <tbody>
+      {% for food in foods %} 
+      <tr>
+          <td>{{ food.food_name }}</td>
+  
+          
+          <td>{{food.quantity}}</td>
+          
+          
+      
+      </tr>
+      {% endfor %}
+  
+      </tbody>
+      </table>
+     
+      
+  
+      
+  
+  </div>
+
+    
+  </body>
+  {%endblock%}

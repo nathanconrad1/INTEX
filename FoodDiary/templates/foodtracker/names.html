@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href= "{% static 'css/table.css' %}" >
+<form method="post" enctype="multipart/form-data" action="{% url 'foodtracker:fdc_api_name'%}"> 
+    {% csrf_token %}
+    <input type="text"  placeholder="Search.." name='foodName'>
+    <input type="hidden" name='3dcid' value="{{current_dc}}">
+    <input type="hidden" name='3email' value="{{current_person}}">
+</form>
+
+<form name="form" method="POST" action="{% url 'foodtracker:fdc_api_nutrients' %}">
+    {% csrf_token %}
+<label for="foodID">Choose a food:</label>
+<select name="food" id="foodID">
+    {% for food in listItem %}
+    <option value="{{food.id}}">{{food.name}}</option>
+    {% endfor %}
+    
+</select>
+
+<input type="hidden" name='dcid' id='dcid' value="{{current_dc}}">
+<input type="hidden" name='email' id='email' value="{{current_person}}">
+
+<button type="submit">Get Food Info</button>
+</form>
+    {% if send %}
+    <p>{{message}}</p>
+    {% endif %}
+<p>{{person.firstName}}</p>
+
+<!--'food_name', 'food_K', 'food_na', 'food_phos', 'food_protein', 'food_water'-->
+<form name="form" method="post" action="{% url 'foodtracker:storeFood' %}">
+    {% csrf_token %}
+    <label for='food_name'>Food Name:</label>
+    <input type="text" name='food_name' id='food_name' value="{{food_name}}"> 
+    <br><br>
+    <label for='food_K'>Food K:</label>
+    <input type="number" min="0" step=".01" name='food_K' id='food_K' value="{{k}}"> 
+    <br><br>
+    <label for='food_na'>Food Na:</label>
+    <input type="number" min="0" step=".01" name='food_na' id='food_na' value="{{na}}"> 
+    <br><br>
+    <label for='food_phos'>Food Phospherous:</label>
+    <input type="number" min="0" step=".01" name='food_phos' id='food_phos' value="{{phos}}">
+    <br><br>
+    <label for='food_protein'>Food Protein:</label>
+    <input type="number" min="0" step=".01" name='food_protein' id='food_protein' value="{{protein}}">
+    <br><br>
+    <label for='food_water'>Food Water:</label>
+    <input type="number" min="0" step=".01" name='food_water' id='food_water' value="{{water}}">
+    <br><br>  
+    <label for='quantity'>Quantity:</label>
+    <input type="number" min="0" step="1" name='quantity' id='quantity'>
+    <input type="hidden" name='4dcid' value="{{current_dc}}">
+    <input type="hidden" name='4email' value="{{current_person}}">
+    <br><br>
+    <button type="submit" name='done'>Submit</button>
+    <!-- <button type="submit" name='more'>Submit and Add More Food</button> -->
+</form>
+
+
+{% comment %} <div>
+    <table class="food_table">
+        <thead>
+            <tr>
+                <th>Food</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for food in foods %} 
+            <tr>
+                <td>{{ food }}</td>
+            <tr>
+            {% endfor %}
+
+        </tbody> 
+</div>   {% endcomment %}
+
+
+
+
+        
+<div id="wrapper">
+    <h1>Today's Food</h1>
+    
+    <table id="keywords" cellspacing="0" cellpadding="0">
+    <thead>
+        <tr>
+        <th><span>Food</span></th>
+        <th><span>Quantity</span></th>
+        <th><span>Delete</span></th>
+        <th><span>Edit</span></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for food in foods %} 
+    <tr>
+        <td>{{ food.food_name }}</td>
+
+        {% comment %} <td> 
+        <input type="hidden" id="quantity" name="fQuantity" value="{{food.quantity}}">
+        </td> {% endcomment %}
+        
+        <td>{{food.quantity}}</td>
+        
+        
+        
+        <td>
+            <form name="form" method="post" action="{% url 'foodtracker:delete' %}">
+                {% csrf_token %}
+                <input type="hidden" name="fName" value="{{food.food_name}}">
+                <input type="hidden" name="dcid" value="{{current_dc}}"> 
+                <input type="hidden" name='email' id='email' value="{{current_person}}">
+                <button type="submit">delete</button>
+            </form>
+        </td>
+        
+        <td>
+            <form name="form" method="post" action="{% url 'foodtracker:update' %}">
+                {% csrf_token %}
+                <input type="hidden" id="foodName" name="2fname" value="{{food.food_name}}"> 
+                <input type="hidden" id="foodName" name="quantity" value="{{food.quantity}}">
+                <input type="hidden" id="foodName" name="2dcid" value="{{current_dc}}">
+                <input type="hidden" name='2email' value="{{current_person}}"> 
+                <button type="submit">Update</button>
+            </form> 
+        </td>
+
+    </tr>
+    {% endfor %}
+
+    </tbody>
+    </table>
+   
+    
+
+    
+
+</div>
+
+
+
+
+
+
+{% comment %} <p>
+    k: {{}}
+</p> {% endcomment %}
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<p class= 'p_tag_account'>
+First Name:     &nbsp{{current_person.firstName}}<br>
+Last Name:      &nbsp {{current_person.lastName}}<br>
+Email:          &nbsp{{current_person.email}}<br>
+Gender:         &nbsp{{current_person.gender}}<br>
+Age:            &nbsp{{current_person.age}}<br>
+Weight:         &nbsp{{current_person.weight}}<br>
+Height:         &nbsp{{current_person.height}}<br>
+CoMorbidity:    &nbsp{{current_person.comorbidity}}<br>
+</p>
+
+
+
+<input type="hidden" name="dcid" value="{{current_dc}}"> 
+<input type="hidden" name='email' id='email' value="{{current_person}}">
+{%endblock%}

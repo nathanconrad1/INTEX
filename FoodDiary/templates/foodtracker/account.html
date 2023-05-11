@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrations</title>
+    <link rel="stylesheet" href="{% static 'css/css.css' %}">
+    
+    
+  </head>
+  <body>
+
+    <div class="form">
+        
+        <ul class="tab-group">
+          <li class="tab active"><a href="#signup">Almost There!</a></li>
+        </ul>
+        
+        <div class="tab-content">
+
+            <h1>Confirm Account Info</h1>
+            
+            <form name="form" method="POST" action ="{% url 'foodtracker:storeDailyConsumed' %}">
+                {% csrf_token %}
+              <label for='email'>Confirm Email Identity:</label>
+                    <select name = 'email' class = 'dropdown'>
+                        {% for person in people %}
+                            <option value="{{ person.email }}">{{ person.email }}</option>
+                        {% endfor %}
+                    </select>
+              <button type="submit" class="button button-block">Save Account Info</button>
+            </form>
+          
+              {% comment %} {% if {{comorbidity}} == 'High Blood Pressure'%}
+              
+              <div class="field-wrap">
+                <label for="systolic_bp">
+                  Enter Your Current Systolic BP <span class="req">*</span>
+                </label>
+                <input type="number" min="0" step="1" required autocomplete="off" name='systolic_bp' id='systolic_bp'>
+              </div>
+              <div class="field-wrap">
+                <label for="diastolic_bp">
+                  Enter Your Current Diastolic BP <span class="req">*</span>
+                </label>
+                <input type="number" min="0" step="1" required autocomplete="off" name='diastolic_bp' id='diastolic_bp'>
+              </div>
+              <input type="hidden" min="0" step="1" required autocomplete="off" name='blood_glucose' id='blood_glucose' value=''>
+              {% endif %}
+              {% if {{comorbidity}} == 'Diabetes'%}
+              <div class="field-wrap">
+                <label for="blood_glucose">
+                  Enter Your Current Blood Glucose Level <span class="req">*</span>
+                </label>
+                <input type="number" min="0" step="1" required autocomplete="off" name='blood_glucose' id='blood_glucose'>
+              </div>
+                <input type="hidden" name='systolic_bp' id='systolic_bp' value=''>
+                <input type="hidden" name='diastolic_bp' id='diastolic_bp' value=''>
+
+              {% endif %}
+              <div class="field-wrap">
+                <label>
+                  Today's Mental Health Rating<span class="req">*</span>
+                </label>
+                <div class='field-wrap extra'>
+                    <label for='mentalHealthRating'>Enter Current Mental Health State</label>
+                    <select name="mentalHealthRating" class='dropdown' >
+                        <option value='Very Poor'>Very Poor</option>
+                        <option value='Poor'>Poor</option>
+                        <option value='Fair'>Fair</option>
+                        <option value='Good'>Good</option>
+                        <option value='Very Good'>Very Good</option>
+                    </select>
+                </div>
+            </div> {% endcomment %}
+                
+
+          
+        </div><!-- tab-content -->
+        
+    </div> <!-- /form -->
+      
+  </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    $('.form').find('input, textarea').on('keyup blur focus', function (e) {
+  
+    var $this = $(this),
+        label = $this.prev('label');
+  
+        if (e.type === 'keyup') {
+              if ($this.val() === '') {
+            label.removeClass('active highlight');
+          } else {
+            label.addClass('active highlight');
+          }
+      } else if (e.type === 'blur') {
+          if( $this.val() === '' ) {
+              label.removeClass('active highlight'); 
+              } else {
+              label.removeClass('highlight');   
+              }   
+      } else if (e.type === 'focus') {
+        
+        if( $this.val() === '' ) {
+              label.removeClass('highlight'); 
+              } 
+        else if( $this.val() !== '' ) {
+              label.addClass('highlight');
+              }
+      }
+  
+  });
+  
+  $('.tab a').on('click', function (e) {
+    
+    e.preventDefault();
+    
+    $(this).parent().addClass('active');
+    $(this).parent().siblings().removeClass('active');
+    
+    target = $(this).attr('href');
+  
+    $('.tab-content > div').not(target).hide();
+    
+    $(target).fadeIn(600);
+    
+  });</script>
+</html>
+
+
+
+

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <form name="form" method="post" action= {% url 'storePerson' %}>
+        {% csrf_token %}
+        <label for='email'>Email:</label>
+        <input type="text" name='email' id='email' value="email">
+        <br><br>
+        <label for='firstName'>Enter your first name:</label>
+        <input type="text" name='firstName' id='firstName' value="firstName"> 
+        <br><br>
+        <label for='lastName'>Enter your last name:</label>
+        <input type="text" name='lastName' id='lastName' value="lastName"> 
+        <br><br>     
+        <label for='gender'>Gender:</label>
+        <select name="gender">
+            <option value='Male'>Male</option>
+            <option value='Female'>Female</option>
+        </select>
+        <br><br>
+        <label for='age'>Enter your age:</label>
+        <input type="number" min="0" step="1" name='age' id='age'>
+        <br><br>
+        <label for='weight'>Enter your weight (lbs):</label>
+        <input type="number" min="0" step="1" name='weight' id='weight'>
+        <br><br>
+        <label for='height'>Enter your height (inches):</label>
+        <input type="number" min="0" step="1" name='height' id='height'> 
+        <br><br>  
+        <button type="submit">Add Info</button>
+        </form>
+
+{% endblock %}            
+

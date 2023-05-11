@@ -1,0 +1,190 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrations</title>
+    <link rel="stylesheet" href="{% static 'css/css.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon-32x32.png' %}" />
+    
+  </head>
+ <body>
+    <div class="form">
+        
+        <ul class="tab-group">
+          <li class="tab active"><a href="#signup">Sign Up</a></li>
+          <li class="tab"><a href="#login">Log In</a></li>
+        </ul>
+        
+        <div class="tab-content">
+          <div id="signup">   
+            <h1>Sign Up</h1>
+            
+            <form name="form" method="POST" action = "{% url 'foodtracker:storePerson'%}">
+                {% csrf_token %}
+              <div class="top-row">
+                <div class="field-wrap">
+                  <label for="firstName">
+                    First Name<span class="req">*</span>
+                  </label>
+                  <input type="text" required autocomplete="off" name='firstName' id='firstName'>
+                </div>
+            
+                <div class="field-wrap">
+                  <label for="lastName">
+                    Last Name<span class="req">*</span>
+                  </label>
+                  <input type="text"required autocomplete="off" name='lastName' id='lastName'>
+                </div>
+              </div>
+      
+              <div class="field-wrap">
+                <label for="email">
+                  Email Address<span class="req">*</span>
+                </label>
+                <input type="email"required autocomplete="off" name='email' id='email'>
+              </div>
+              
+              <div class="field-wrap">
+                <label>
+                  Set A Password<span class="req">*</span>
+                </label>
+                <input type="password",required, autocomplete="off"/>
+              </div>
+              
+              
+              
+                <div class="field-wrap">
+                    <label for="age">
+                      Age<span class="req">*</span>
+                    </label>
+                    <input type= 'number' required autocomplete="off" name='age' id='age'>
+                </div>
+                <div class="field-wrap">
+                    <label for="weight">
+                      Weight (In Pounds)<span class="req">*</span>
+                    </label>
+                    <input type="number" required autocomplete="off" name='weight' id='weight'>
+                </div>
+                <div class="field-wrap">
+                    <label for="height">
+                      Height (In Inches)<span class="req">*</span>
+                    </label>
+                    <input type="number"required autocomplete="off" name='height' id='height'>
+                </div>
+                 <div class = 'pull-together'> 
+                <div class='field-wrap extra'>
+                    <label for='gender'>Gender:</label>
+                    <select name="gender" class='dropdown' >
+                        <option value='Male'>Male</option>
+                        <option value='Female'>Female</option>
+                    </select>
+                </div>
+                <div class='field-wrap extra'>
+                    <label for='cormorbidity'>Condition:</label>
+                    <select name="comorbidity" class = 'dropdown' >
+                        <option value='Diabetes'>Diabetes</option>
+                        <option value='HBP'>High Blood Pressure</option>
+                    </select>
+                  
+                </div>
+                <div class='field-wrap extra'>
+                    <label for='diet_name'>Kidney Condition:</label>
+                    <select name = 'diet_name' class = 'dropdown'>
+                        {% for diet_name in diet_names %}
+                            <option value="{{diet_name}}">{{ diet_name }}</option>
+                        {% endfor %}
+                    </select>
+                  
+                </div>
+            </div>
+                <button type="submit" class="button button-block">Register</button>
+
+              </form>
+    
+          </div>
+          
+          <div id="login">   
+            <h1>Welcome Back!</h1>
+            
+            <form name="form" method="POST" action = "{% url 'foodtracker:login_request' %}">
+              {% csrf_token %}
+              <div>
+              <label for='email'>Confirm Email Identity:</label>
+              <input type="email" name = 'email'>
+                    <!-- <select name = 'email' class = 'dropdown dropdown-fix'>
+                        {% for person in people %}
+                            <option value="{{ person.email }}">{{ person.email }}</option>
+                        {% endfor %}
+                    </select> -->
+              
+              <div class="field-wrap">
+                <label>
+                  Enter Password<span class="req">*</span>
+                </label>
+                <input type="password",required, autocomplete="off"/>
+              </div>
+              
+              <button type="submit" class="button button-block"/>Log In</button>
+            
+            </form>
+    
+          </div>
+          
+        </div><!-- tab-content -->
+        
+    </div> <!-- /form -->
+      
+  </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    $('.form').find('input, textarea').on('keyup blur focus', function (e) {
+  
+    var $this = $(this),
+        label = $this.prev('label');
+  
+        if (e.type === 'keyup') {
+              if ($this.val() === '') {
+            label.removeClass('active highlight');
+          } else {
+            label.addClass('active highlight');
+          }
+      } else if (e.type === 'blur') {
+          if( $this.val() === '' ) {
+              label.removeClass('active highlight'); 
+              } else {
+              label.removeClass('highlight');   
+              }   
+      } else if (e.type === 'focus') {
+        
+        if( $this.val() === '' ) {
+              label.removeClass('highlight'); 
+              } 
+        else if( $this.val() !== '' ) {
+              label.addClass('highlight');
+              }
+      }
+    });
+  
+  $('.tab a').on('click', function (e) {
+    
+    e.preventDefault();
+    
+    $(this).parent().addClass('active');
+    $(this).parent().siblings().removeClass('active');
+    
+    target = $(this).attr('href');
+  
+    $('.tab-content > div').not(target).hide();
+    
+    $(target).fadeIn(600);
+    
+  });
+</script>
+</html>
+
+
+
+

@@ -1,0 +1,20 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrations</title>
+    <link rel="stylesheet" href="{% static 'css/css.css' %}">
+    
+    
+  </head>
+  <body>
+    <h1>Congratulations! You have succesfully created your account!
+        <br>
+        <a href = "{% url 'foodtracker:login_register'%}"> Click Here to Log In</a> 
+    </h1>
+
+    
+  </body>

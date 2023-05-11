@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <form name="form" method="post" action="{% url 'updatePerson' %}">
+        {% csrf_token %}
+        <label for='email'>Verify email:</label>
+        <input type="text" name='email' id='email'> 
+        <br><br>
+        <label for='firstName'>Change your first name:</label>
+        <input type="text" name='firstName' id='firstName'> 
+        <br><br>
+        <label for='firstName'>Change your last name:</label>
+        <input type="text" name='firstName' id='firstName'> 
+        <br><br>
+        <label for='age'>Change your age:</label>
+        <input type="number" min="0" step="1" name='age' id='age'>
+        <br><br>
+        <label for='weight'>Change your weight (lbs):</label>
+        <input type="number" min="0" step="1" name='weight' id='weight'>
+        <br><br>
+        <label for='height'>Change your height (inches):</label>
+        <input type="number" min="0" step="1" name='height' id='height'> 
+        <br><br>  
+        <button type="submit">Add New Info</button>
+    </form>
+    <br><br><br><br>
+
+    <form name="form" method="post" action="{% url 'deletePerson' %}"
+        <button type="submit">Delete Your Profile</button>
+    </form>
+{% endblock %}            
+

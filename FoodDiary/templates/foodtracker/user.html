@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrations</title>
+    <link rel="stylesheet" href="{% static 'css/css.css' %}">
+    
+    </head>
+        <body>
+            Form below
+            <form name="form" method="POST" action ="{% url 'foodtracker:user'%}">
+                {% csrf_token %}
+                <button type="submit" class="button button-block">I am not a robot</button>
+            </form>
+        </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    $('.form').find('input, textarea').on('keyup blur focus', function (e) {
+  
+    var $this = $(this),
+        label = $this.prev('label');
+  
+        if (e.type === 'keyup') {
+              if ($this.val() === '') {
+            label.removeClass('active highlight');
+          } else {
+            label.addClass('active highlight');
+          }
+      } else if (e.type === 'blur') {
+          if( $this.val() === '' ) {
+              label.removeClass('active highlight'); 
+              } else {
+              label.removeClass('highlight');   
+              }   
+      } else if (e.type === 'focus') {
+        
+        if( $this.val() === '' ) {
+              label.removeClass('highlight'); 
+              } 
+        else if( $this.val() !== '' ) {
+              label.addClass('highlight');
+              }
+      }
+  
+  });
+  
+  $('.tab a').on('click', function (e) {
+    
+    e.preventDefault();
+    
+    $(this).parent().addClass('active');
+    $(this).parent().siblings().removeClass('active');
+    
+    target = $(this).attr('href');
+  
+    $('.tab-content > div').not(target).hide();
+    
+    $(target).fadeIn(600);
+    
+  });</script>
+</html>
+
+
+
+

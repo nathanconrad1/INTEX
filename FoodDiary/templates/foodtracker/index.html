@@ -1,0 +1,332 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block nav %}
+<h2 class= 'welcome'>Welcome {{current_person.firstName}}</h2>
+{% endblock %}
+
+{% block content %}
+
+
+{% comment %} {% endcomment %}
+    {% include 'foodtracker/radialtracker.html' %}
+    <form class = 'calculate-nutrients' name='form' method="post" action="{% url 'foodtracker:radialtracker' %}">
+        {% csrf_token %}
+        <input type='hidden' name='email' id='email' value="{{current_person.email}}">
+        <input type='hidden' name='dcid' id='dcid' value="{{current_dc.dcid}}">
+        <button type="submit" class= 'button button-block index-button '>Calculate Nutrients</button>
+    </form>
+    <div class = 'flex_new' align='center'>
+      
+        {% if length_e %}
+        <div class = "bold_div">You have exceeded your limit(s) in the following nutrient(s):</div>
+          {% for nutrient in exceeded %}
+            <ul> {{nutrient}}</ul>
+          {% endfor %}
+        {% endif %}
+      
+        {% if length_r %}
+          <div class = "bold_div"> We recommend the following:</div>
+          {% for nutrient  in recommended %}
+            {% if nutrient == 'Potassium'%}
+            <ul>For Potassium, try having more bananas, beans, or raisins</ul>
+            {% elif nutrient == 'Phosphorus'%}
+            <ul>For Phosphorus, try having more yogurt, salmon, or cheese</ul>
+            {% elif nutrient == 'Protein'%}
+            <ul>For Protein, try having more lean meats, eggs, or nuts</ul>
+            {% elif nutrient == 'Sodium'%}
+            <ul>For Sodium, try having more seafood, canned veggies, or soup</ul>
+            {% else %}
+            <ul>Try drinking more water</ul>
+            {% endif %}
+          {% endfor %}
+        {% endif%}
+
+    </div>
+      <div class = 'radial_legend'>
+          <div class = 'wrapper'>
+              <fieldset class = "legend">
+                  <!-- Legend tag using -->
+                  {% comment %} <legend>NUTRIENTS:</legend> {% endcomment %}
+                  <label>PHOSPHORUS</label>
+                  <div class='box phosphorus boxy'></div>
+                  <label>POTASSIUM (K)</label>
+                  <div class='box potassium boxy'></div>
+                  <label>PROTEIN</label>
+                  <div class='box protein boxy'></div>
+                  <label>SODIUM (Na)</label>
+                  <div class='box sodium boxy'></div>
+                  <label>WATER</label>
+                  <div class='box water boxy'></div> 
+              </fieldset>
+          </div>
+      
+          <div class="container">
+          <ul class="week"></ul>
+          <hr>
+          <div class="date"></div>
+          <div class="main"></div>
+          </div>
+      </div>
+      
+      {% comment %} Legend for the Radial Graph {% endcomment %}
+      
+      
+<script>
+
+       //Days of the week 
+        var data = [
+          {day: 'M'},
+          {day: 'T'},
+          {day: 'W'},
+          {day: 'T'},
+          {day: 'F'},
+          {day: 'S'},
+          {day: 'S'}
+        ];
+      
+      // format the date to be Day of week, Month, Day, Year 
+        var dateFormatter = d3.time.format("%A, %B %d, %Y");
+      // Creates the chart. assigns triangle shape and default values 
+        var mainChart = new RadialProgressChart('.main', {
+              diameter: 130,
+              series: [
+                {labelStart: '\uF105', value: 0},
+                {labelStart: '\uF105', value: 0},
+                {labelStart: '\uF105', value: 0},
+                {labelStart: '\uF105', value: 0},
+                {labelStart: '\uF105', value: 0}
+              ]}
+        );
+      
+      
+      // selects all of the list items (li) from the class week 
+      d3.select('.week').selectAll('li')
+      .data(data).enter()
+      .append('li').on('click', function (d) {
+        // Update active class, date and main chart
+        d3.selectAll('.circle').classed('active', false);
+        d3.select(this).select('.circle').classed('active', true);
+        d3.select('.date').text(d.date);
+        mainChart.update(d.series);
+      })
+      .append('div').attr('class', 'circle').text(function (d) {
+        return d.day;
+      })
+      .each(function (d, i) {
+        d.date = dateFormatter(getDate(i));
+        todayDate = dateFormatter(new Date());
+        // position's nutrient values for the day
+        if (todayDate == d.date) {
+          d.series = setValues();
+        }
+        else {
+          d.series = getRandom();
+        }
+        new RadialProgressChart(this.parentNode, {
+          diameter: 10,
+          stroke: {
+            width: 6,
+            gap: 1
+          },
+          series: d.series
+        });
+        });
+      
+        // Return some chronological dates
+        function getDate(i) {
+          var date = new Date(getNearestMonday());
+          date.setDate(date.getDate() + i);
+          return date;
+        }
+      
+      // Function to return the date of the previous Monday
+      function getNearestMonday(){
+        recentMonday = new Date();
+        recentMonday.setDate(recentMonday.getDate() - (recentMonday.getDay() + 6) % 7);
+        recentMonday = dateFormatter(recentMonday)
+        return recentMonday}
+      
+      
+      // Return a list
+      function setValues() {
+        return [Number({{water}}), Number({{na}}), Number({{protein}}), Number({{k}}), Number({{phos}})];
+      }
+      
+      // Random int between 20-80
+      function getRandom() {
+        return [(Math.round(Math.random() * 60) + 20), (Math.round(Math.random() * 60) + 20), (Math.round(Math.random() * 60) + 20), (Math.round(Math.random() * 60) + 20), (Math.round(Math.random() * 60) + 20)];
+      }
+
+      // Return blank lists for days after today
+      function setBlank() {
+        return [0,0,0,0,0]
+      }
+      
+      // funciton to return the number of the current day so that it is automatically selected
+      function getNumber(){
+          num = new Date()
+          day = num.getDay() - 1 
+        if (day == 0) {
+            day = 7}
+          return day}
+        
+      dayoftheweek = getNumber()
+      
+      // Select today by default
+      
+      document.querySelectorAll('li')[dayoftheweek + 4].click();
+      
+        
+</script>
+
+
+<form name="form" class='form-class'method="post" action="{% url 'foodtracker:nameFood' %}">
+    {% csrf_token %}
+    <input type="hidden" name="dcid" value="{{current_dc.dcid}}"/>
+    <input type="hidden" name="email" value="{{current_person.email}}"/>
+    <button class="button button-block index-button" type="submit">Manage Food Info</button>
+</form>
+
+    <div class="mood-tracker">
+        <h2>How are you feeling today?</h2>
+      <form id="form" class='mood-selector' method="POST" action ="{% url 'foodtracker:update_mood' %}">
+        {% csrf_token %}
+        <fieldset class="smileys">
+         <div class = "emotions"> 
+          <label class="far fa-laugh face-class" for="very-happy"></label>
+          <label class="far fa-smile face-class" for="happy"></label>
+          <label class="far fa-meh face-class" for="meh"></label>
+          <label class="far fa-frown face-class" for="sad"></label>
+          <label class="far fa-sad-tear face-class" for="very-sad"></label>
+         </div>
+         <div class = 'radio_buttons'>
+          <input type="radio" class='face-input' name="faces" id="very-happy" value = 'Very Good'/>
+          <input type="radio" class='face-input' name="faces" id="happy" value = 'Good'/>
+          <input type="radio" class='face-input'name="faces" id="meh" value = 'Fair'/>
+          <input type="radio" class='face-input' name="faces" id="sad" value = 'Poor'/>
+          <input type="radio" class='face-input' name="faces" id="very-sad" value = 'Very Poor'/>
+          <input type="hidden" name="dcid" value="{{current_dc.dcid}}"/>
+          <input type="hidden" name="email" value="{{current_person}}"/>
+         </div>
+        <div>
+            <h4>
+                Current Mood: {{current_dc.mentalHealthRating}}
+            </h4>
+        </div>
+         <div class= 'button_div_submit'>
+          
+          <button type="submit" class= 'button button-block index-button'>Submit Mood</button>
+         </div>
+        </fieldset>
+      </form>
+    </div>
+
+
+
+    <div class="b_tab-content">
+        <div id="b_signup">   
+          <h1>Record Daily Measurements</h1>
+          
+           <form name="b_form" class = 'b_form' method="POST" action = "{% url 'foodtracker:updateMeasurement'%}">   
+             {% csrf_token %} 
+                <div class="b_top-row">
+                    <div id = 'diabetes' class="b_field-wrap">
+                        <label for="b_blood_glucose">
+                        Blood Glucose<span class="req">*</span>
+                        </label>
+                        <input   type="number" required autocomplete="off" name='blood_glucose' id='blood_glucose' value = {{current_dc.diastolic_bp}}>
+                    </div>
+            
+                    <div id= 'systolic' class="b_field-wrap">
+                        <label for="systolic">
+                        Systolic Blood Pressure<span class="req">*</span>
+                        </label>
+                        <input  type="number"required autocomplete="off" name='d-systolic' id='d-systolic' value = {{current_dc.systolic_bp}}>
+                    </div>
+                
+        
+                    <div id='diastolic' class="b_field-wrap">
+                        <label for="diastolic">
+                            Diastolic Blood Pressure<span class="req">*</span>
+                        </label>
+                        <input  type="number"required autocomplete="off" name='d-diastolic' id='d-diastolic' value = {{current_dc.blood_glucose}} >
+                        
+                    </div>
+                    <div class = 'hidden-inputs'>
+                        <input type="hidden" name='m-dcid' id='m-dcid' value="{{current_dc}}">
+                        <input type="hidden" name='m-person' id='m-person' value="{{current_person}}">
+                    </div>
+                </div >
+
+                <input type="hidden" name="dcid" value="{{current_dc.dcid}}"/>
+                <input type="hidden" name="email" value="{{current_person.email}}"/>
+                <button type="submit" class="b_button b_button-block">Save Measurements</button>
+                <p class = 'comorbidity' id ='comorbidity'>{{current_person.comorbidity}}</p>
+            </form>
+  
+        </div> 
+    </div>
+
+<script>
+    (function(){
+        if(document.getElementById('comorbidity').innerHTML == "Diabetes")
+        {
+            document.querySelector(".b_tab-content").style.visibility = 'visible';
+            document.querySelector("#diabetes").style.visibility = 'visible';
+            
+        }else if (document.getElementById('comorbidity').innerHTML ==  "HBP")
+        {
+            document.querySelector(".b_tab-content").style.visibility = 'visible';
+            document.querySelector("#systolic").style.visibility = 'visible';
+            document.querySelector("#diastolic").style.visibility = 'visible';
+                   
+        }
+    })();
+
+</script>
+
+
+{% comment %} <canvas id="myChart" width="400" height="400"></canvas>
+<script>
+const ctx = document.getElementById('myChart').getContext('2d');
+const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: [{% for data in data %} '{{data.food_name}}', {% endfor %}],
+        datasets: [{
+            label: 'potassium per Food',
+            data: [{% for data in data %} {{data.food_K}}, {% endfor %}],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>  {% endcomment %}
+
+
+
+{% endblock %}
